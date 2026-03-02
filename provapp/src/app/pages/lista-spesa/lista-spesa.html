@@ -1,25 +1,24 @@
-<h1>Lista della spesa</h1>
+<div>
+  <h2>Lista della Spesa</h2>
 
-<form (ngSubmit)="addItem()">
-    <input
-        [value]="newItem()"
-        (input)="newItem.set($any($event.target).value)"
-        placeholder="Es. Latte, Pane..."
-        required
-    />
-    <button type="submit">Aggiungi</button>
-</form>
+  @if (authService.hasRole('user_plus')) {
+    <div>
+      <input [ngModel]="newItem()" (ngModelChange)="newItem.set($event)" placeholder="Nuovo elemento...">
+      <button (click)="addItem()">Aggiungi</button>
+    </div>
+  }
 
-@if (error()) {
-    <p>{{ error() }}</p>
-    }
-
-@if (items().length === 0) {
-    <p>Nessun elemento nella lista.</p>
-} @else {
-    <ul>
-        @for (item of items(); track item) {
-            <li>{{ item }}</li>
+  <ul>
+    @for (item of items(); track item.id) {
+      <li>
+        {{ item.nome }}
+        @if (authService.hasRole('user_plus')) {
+          <button (click)="deleteItem(item.id)">elimina</button>
         }
-    </ul>
-}
+      </li>
+    }
+  </ul>
+
+  @if (items().length === 0) { <p>Nessun elemento in lista.</p> }
+  @if (error()) { <p style="color: red">{{ error() }}</p> }
+</div>

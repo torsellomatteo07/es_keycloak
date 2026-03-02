@@ -1,16 +1,15 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
-import { RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from './core/auth.service';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule,RouterOutlet, RouterLink, RouterLinkActive],
-  templateUrl: './app.html',
+  standalone: true,
+  imports: [CommonModule, RouterOutlet, RouterLink, RouterLinkActive],
+  templateUrl: './app.component.html',
   styleUrl: './app.css'
 })
 export class App {
-  constructor(public auth: AuthService) {}
+  public auth = inject(AuthService);
 }
