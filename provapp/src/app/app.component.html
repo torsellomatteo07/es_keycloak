@@ -1,25 +1,13 @@
 <nav>
-  <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">Home</a>
-  &nbsp;
+  <a routerLink="/">Home</a> &nbsp;
   @if (auth.isLoggedIn()) {
-    <a routerLink="/profile" routerLinkActive="active">Profile</a>
-    &nbsp;
-    <a routerLink="/spesa" routerLinkActive="active">Lista spesa</a>
-    &nbsp;
-    
-    @if (auth.hasRole('user_plus')) {
-      <a routerLink="/plus" routerLinkActive="active">Area Plus</a>
-      &nbsp;
-    }
-
-    <span>{{ auth.getUsername() }}</span>
-    &nbsp;
+    <a routerLink="/profile">Profilo</a> &nbsp;
+    @if (auth.hasRole('docente')) { <a routerLink="/docente">Registro Docente</a> &nbsp; }
+    @if (auth.hasRole('studente')) { <a routerLink="/studente">I Miei Voti</a> &nbsp; }
+    <span><b>{{ auth.getUsername() }}</b></span> &nbsp;
     <button (click)="auth.logout()">Logout</button>
   } @else {
     <button (click)="auth.login()">Login</button>
   }
 </nav>
-
-<main>
-  <router-outlet />
-</main>
+<main><router-outlet /></main>

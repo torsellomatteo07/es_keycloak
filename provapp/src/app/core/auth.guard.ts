@@ -10,6 +10,16 @@ export const authGuard: CanActivateFn = (route, state) => {
   return false;
 };
 
+export const roleGuard: CanActivateFn = (route) => {
+  const authService = inject(AuthService);
+  const router = inject(Router);
+  const expectedRole = route.data?.['role'];
+  if (authService.hasRole(expectedRole)) return true;
+  router.navigate(['/accesso-negato']);
+  return false;
+};
+
+// Manteniamo questa per compatibilità col vecchio codice
 export const userPlusGuard: CanActivateFn = () => {
   const authService = inject(AuthService);
   const router = inject(Router);

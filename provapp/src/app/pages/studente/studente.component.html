@@ -1,0 +1,14 @@
+<h2>Area Studente - I Miei Voti</h2>
+<table border="1" style="width: 100%; text-align: left;">
+  <tr>
+    <th>Materia</th>
+    <th>Voto</th>
+  </tr>
+  @for (v of voti(); track v.id) {
+    <tr>
+      <td>{{ v.materia }}</td>
+      <td><b>{{ v.voto }}</b></td>
+    </tr>
+  }
+</table>
+@if (voti().length === 0) { <p>Non hai ancora nessun voto registrato.</p> }

@@ -1,43 +1,30 @@
 from flask import Flask, request, jsonify, g
 from flask_cors import CORS
-from auth import require_auth, require_role
+from auth import require_auth, require_role, get_roles
+from database import Database
 
 app = Flask(__name__)
-# CORS aperto per evitare blocchi
-CORS(app, resources={r"/*": {"origins": "*"}})
+CORS(app)
+db = Database()
 
-# Lista condivisa (Slide 6)
-shopping_list = []
-counter = 1
-
-@app.route("/items", methods=["GET"])
+@app.route("/voti", methods=["GET"])
 @require_auth
-def get_items():
-    return jsonify({"items": shopping_list})
+def get_voti():
+    roles = get_roles(g.user)
+    username = g.user.get("preferred_username")
+    if "docente" in roles:
+        return jsonify(db.get_tutti_voti())
+    elif "studente" in roles:
+        return jsonify(db.get_voti_studente(username))
+    return jsonify({"error": "Ruolo non autorizzato"}), 403
 
-@app.route("/items", methods=["POST"])
+@app.route("/voti", methods=["POST"])
 @require_auth
-@require_role("user_plus")
-def add_item():
-    global counter
-    data = request.get_json()
-    item_name = data.get("item", "").strip()
-    if not item_name:
-        return jsonify({"error": "Item vuoto"}), 400
-    nuovo = {"id": counter, "nome": item_name}
-    shopping_list.append(nuovo)
-    counter += 1
-    return jsonify({"message": "Aggiunto", "items": shopping_list}), 201
-
-@app.route("/items/<int:item_id>", methods=["DELETE"])
-@require_auth
-@require_role("user_plus")
-def delete_item(item_id):
-    for i, item in enumerate(shopping_list):
-        if item["id"] == item_id:
-            shopping_list.pop(i)
-            return '', 204
-    return jsonify({"error": "Non trovato"}), 404
+@require_role("docente")
+def post_voto():
+    data = request.json
+    db.aggiungi_voto(data['nome'], data['materia'], data['voto'], data['username_studente'])
+    return jsonify({"message": "Voto inserito"}), 201
 
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0', port=5000)

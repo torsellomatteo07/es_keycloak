@@ -1,0 +1,15 @@
+<h2>Area Docente - Inserimento Voti</h2>
+<div style="border: 1px solid #ccc; padding: 10px; margin-bottom: 20px;">
+  <input [(ngModel)]="nuovoVoto.nome" placeholder="Nome Studente">
+  <input [(ngModel)]="nuovoVoto.username_studente" placeholder="Username Keycloak">
+  <input [(ngModel)]="nuovoVoto.materia" placeholder="Materia">
+  <input type="number" [(ngModel)]="nuovoVoto.voto" placeholder="Voto">
+  <button (click)="salva()">Assegna Voto</button>
+</div>
+
+<h3>Registro di tutti i voti:</h3>
+<ul>
+  @for (v of voti(); track v.id) {
+    <li>{{ v.nome_studente }} ({{ v.username_studente }}): <b>{{ v.voto }}</b> in {{ v.materia }}</li>
+  }
+</ul>

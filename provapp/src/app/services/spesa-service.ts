@@ -13,15 +13,16 @@ export class SpesaService {
     return new HttpHeaders({ 'Authorization': `Bearer ${this.keycloak.token}` });
   }
 
-  getItems(): Observable<any> {
-    return this.http.get(`${this.baseUrl}/items`, { headers: this.getHeaders() });
+  // Metodi per il Registro Elettronico
+  getVoti(): Observable<any[]> {
+    return this.http.get<any[]>(`${this.baseUrl}/voti`, { headers: this.getHeaders() });
+  }
+  aggiungiVoto(voto: any): Observable<any> {
+    return this.http.post(`${this.baseUrl}/voti`, voto, { headers: this.getHeaders() });
   }
 
-  addItem(item: string): Observable<any> {
-    return this.http.post(`${this.baseUrl}/items`, { item }, { headers: this.getHeaders() });
-  }
-
-  deleteItem(id: number): Observable<any> {
-    return this.http.delete(`${this.baseUrl}/items/${id}`, { headers: this.getHeaders() });
-  }
+  // Metodi per la vecchia Lista Spesa (per non far crashare l'app)
+  getItems(): Observable<any> { return this.getVoti(); }
+  addItem(item: any): Observable<any> { return this.aggiungiVoto({nome: item, materia: 'Generale', voto: 0, username_studente: 'test'}); }
+  deleteItem(id: number): Observable<any> { return this.http.delete(`${this.baseUrl}/items/${id}`, { headers: this.getHeaders() }); }
 }
